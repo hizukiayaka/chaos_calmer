@@ -351,6 +351,7 @@ platform_check_image() {
 	tl-wa830re-v2 | \
 	tl-wr841n-v7 | \
 	tl-wr841n-v8 | \
+	tl-wifiadv-v8 | \
 	tl-wr841n-v9 | \
 	tl-wr842n-v2 | \
 	tl-wr941nd | \
