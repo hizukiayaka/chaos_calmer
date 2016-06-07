@@ -1,12 +1,12 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 37f7252..330df8b 100644
+index b723d27..49aaa9c 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -5,6 +5,6 @@ PROJECT(xcostc C)
- ADD_DEFINITIONS(-Os -Wall --std=gnu99 -g3 -Wmissing-declarations)
+@@ -12,6 +12,6 @@ ENDIF(XCOSTC_DEBUG)
+ 
  
  ADD_EXECUTABLE(xcostc network.c main.c options.c tc.c)
--TARGET_LINK_LIBRARIES(xcostc pthread uci ubox)
-+TARGET_LINK_LIBRARIES(xcostc uci ubox)
+-TARGET_LINK_LIBRARIES(xcostc pthread uci ubox m)
++TARGET_LINK_LIBRARIES(xcostc uci ubox m)
  
  INSTALL(TARGETS xcostc RUNTIME DESTINATION sbin)
