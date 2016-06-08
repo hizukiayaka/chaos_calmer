@@ -56,6 +56,7 @@
 #define TL_WIFIADVV8_GPIO_LED_LAN2	20
 #define TL_WIFIADVV8_GPIO_LED_LAN3	21
 #define TL_WIFIADVV8_GPIO_LED_LAN4	22
+#define TL_WIFIADVV8_GPIO_BTN_RESET	16
 
 
 static const char *tl_wr841n_v8_part_probes[] = {
@@ -172,6 +173,19 @@ static struct gpio_keys_button tl_mr3420v2_gpio_keys[] __initdata = {
 		.active_low	= 0,
 	}
 };
+
+static struct gpio_keys_button tl_wifiadv_v8_gpio_keys[] __initdata = {
+	{
+		.desc		= "Reset button",
+		.type		= EV_KEY,
+		.code		= KEY_RESTART,
+		.debounce_interval = TL_WR841NV8_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= TL_WIFIADVV8_GPIO_BTN_RESET,
+		.active_low	= 1,
+	} 
+};
+
+
 
 static struct gpio_led tl_wr941nd_v5_leds_gpio[] __initdata = {
 	{
@@ -362,9 +376,17 @@ static void __init tl_wifiadv_v8_setup(void)
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(tl_wifiadv_v8_leds_gpio),
 				 tl_wifiadv_v8_leds_gpio);
 
-	ath79_register_gpio_keys_polled(1, TL_WR841NV8_KEYS_POLL_INTERVAL,
-					ARRAY_SIZE(tl_wr841n_v8_gpio_keys),
-					tl_wr841n_v8_gpio_keys);
+	/* Register key for different platform */
+	if (ATH79_SOC_AR9341 == ath79_soc)
+		ath79_register_gpio_keys_polled
+			(1, TL_WR841NV8_KEYS_POLL_INTERVAL,
+			ARRAY_SIZE(tl_wr841n_v8_gpio_keys) - 1,
+			tl_wr841n_v8_gpio_keys);
+	else if (ATH79_SOC_AR9344 == ath79_soc)
+		ath79_register_gpio_keys_polled
+			(1, TL_WR841NV8_KEYS_POLL_INTERVAL,
+			ARRAY_SIZE(tl_wifiadv_v8_gpio_keys),
+			tl_wifiadv_v8_gpio_keys);
 
 }
 
