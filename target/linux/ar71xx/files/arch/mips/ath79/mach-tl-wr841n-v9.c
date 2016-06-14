@@ -36,6 +36,16 @@
 #define TL_WR841NV9_KEYS_POLL_INTERVAL	20	/* msecs */
 #define TL_WR841NV9_KEYS_DEBOUNCE_INTERVAL (3 * TL_WR841NV9_KEYS_POLL_INTERVAL)
 
+#define	CF_WR615N_GPIO_LED_BLUE		0
+#define	CF_WR615N_GPIO_LED_RED		2
+#define	CF_WR615N_GPIO_LED_GREEN	3
+#define	CF_WR615N_GPIO_LED_WLAN		12
+#define	CF_WR615N_GPIO_LED_WAN		1
+
+
+#define	CF_WR615N_GPIO_WDT		13
+#define CF_WR615N_GPIO_BTN_RESET	17
+
 static const char *tl_wr841n_v9_part_probes[] = {
 	"tp-link",
 	NULL,
@@ -95,6 +105,31 @@ static struct gpio_keys_button tl_wr841n_v9_gpio_keys[] __initdata = {
 	}
 };
 
+static struct gpio_led cf_wr615n_leds_gpio[] __initdata = {
+	{
+		.name		= "tp-link:green:wan",
+		.gpio		= CF_WR615N_GPIO_LED_WAN,
+		.active_low	= 1,
+	}, {
+		.name		= "tp-link:green:wlan",
+		.gpio		= CF_WR615N_GPIO_LED_WLAN,
+		.active_low	= 1,
+	},
+};
+
+
+static struct gpio_keys_button cf_wr615n_gpio_keys[] __initdata = {
+	{
+		.desc		= "Reset button",
+		.type		= EV_KEY,
+		.code		= KEY_RESTART,
+		.debounce_interval = TL_WR841NV9_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= CF_WR615N_GPIO_BTN_RESET,
+		.active_low	= 1,
+	}
+};
+
+
 
 static void __init tl_ap143_setup(void)
 {
@@ -142,3 +177,21 @@ static void __init tl_wr841n_v9_setup(void)
 
 MIPS_MACHINE(ATH79_MACH_TL_WR841N_V9, "TL-WR841N-v9", "TP-LINK TL-WR841N/ND v9",
 	     tl_wr841n_v9_setup);
+
+static void __init cf_wr615n_setup(void)
+{
+	/* Disable external watchdog */
+	gpio_set_value(CF_WR615N_GPIO_WDT, 1);
+
+	tl_ap143_setup();
+
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(cf_wr615n_leds_gpio),
+				 cf_wr615n_leds_gpio);
+
+	ath79_register_gpio_keys_polled(1, TL_WR841NV9_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(cf_wr615n_gpio_keys),
+					cf_wr615n_gpio_keys);
+}
+
+MIPS_MACHINE(ATH79_MACH_CF_WR615N, "CF-WR615N", "COMFAST CF-WR615N",
+	     cf_wr615n_setup);
