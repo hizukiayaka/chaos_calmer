@@ -353,6 +353,7 @@ platform_check_image() {
 	tl-wr841n-v8 | \
 	tl-wifiadv-v8 | \
 	tl-wr841n-v9 | \
+	cf-wr615n | \
 	tl-wr842n-v2 | \
 	tl-wr941nd | \
 	tl-wr941nd-v5 | \

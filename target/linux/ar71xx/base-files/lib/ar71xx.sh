@@ -800,6 +800,9 @@ ar71xx_board_detect() {
 	*"TL-WR841N/ND v9")
 		name="tl-wr841n-v9"
 		;;
+	*"CF-WR615N")
+		name="cf-wr615n"
+		;;
 	*"TL-WR842N/ND v2")
 		name="tl-wr842n-v2"
 		;;
