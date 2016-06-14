@@ -624,7 +624,15 @@ define Device/tl-wr847n-v8
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08470008
 endef
-TARGET_DEVICES += tl-wr841n-v8 tl-wifiadv-v8 tl-wifiadv-v8p tl-wr841n-v9 tl-wr841n-v9p tl-wr841n-v10 tl-wr841n-v11 tl-wr842n-v2 tl-wr843nd-v1 tl-wr847n-v8
+
+define Device/cf-wr615n
+    $(Device/tplink-16mlzma)
+    BOARDNAME := CF-WR615N
+    DEVICE_PROFILE := TLWR841
+    TPLINK_HWID := 0x08410009
+endef
+
+TARGET_DEVICES += tl-wr841n-v8 tl-wifiadv-v8 tl-wifiadv-v8p tl-wr841n-v9 tl-wr841n-v9p tl-wr841n-v10 tl-wr841n-v11 tl-wr842n-v2 tl-wr843nd-v1 tl-wr847n-v8 cf-wr615n
 
 define Device/tl-wr941nd-v5
     $(Device/tplink-4mlzma)
