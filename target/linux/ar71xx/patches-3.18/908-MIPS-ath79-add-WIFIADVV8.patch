@@ -1,0 +1,21 @@
+--- a/arch/mips/ath79/Kconfig
++++ b/arch/mips/ath79/Kconfig
+@@ -1094,7 +1094,7 @@ config ATH79_MACH_TL_WR841N_V1
+ 	select ATH79_DEV_M25P80
+ 
+ config ATH79_MACH_TL_WR841N_V8
+-	bool "TP-LINK TL-WR841N/ND v8/TL-MR3420 v2 support"
++	bool "TP-LINK TL-WR841N/ND v8/TL-MR3420 v2/WIFIADV v8 support"
+ 	select SOC_AR934X
+ 	select ATH79_DEV_ETH
+ 	select ATH79_DEV_GPIO_BUTTONS
+--- a/arch/mips/ath79/machtypes.h
++++ b/arch/mips/ath79/machtypes.h
+@@ -167,6 +167,7 @@ enum ath79_mach_type {
+ 	ATH79_MACH_TL_WR841N_V1,	/* TP-LINK TL-WR841N v1 */
+ 	ATH79_MACH_TL_WR841N_V7,	/* TP-LINK TL-WR841N/ND v7 */
+ 	ATH79_MACH_TL_WR841N_V8,	/* TP-LINK TL-WR841N/ND v8 */
++	ATH79_MACH_TL_WIFIADV_V8,       /* WIFIADV v8 AR9341/AR9344 */
+ 	ATH79_MACH_TL_WR841N_V9,	/* TP-LINK TL-WR841N/ND v9 */
+ 	ATH79_MACH_TL_WR842N_V2,	/* TP-LINK TL-WR842N/ND v2 */
+ 	ATH79_MACH_TL_WR941ND,		/* TP-LINK TL-WR941ND */
