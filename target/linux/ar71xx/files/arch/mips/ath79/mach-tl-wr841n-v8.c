@@ -50,6 +50,14 @@
 #define TL_WR841NV8_KEYS_POLL_INTERVAL	20	/* msecs */
 #define TL_WR841NV8_KEYS_DEBOUNCE_INTERVAL (3 * TL_WR841NV8_KEYS_POLL_INTERVAL)
 
+#define TL_WIFIADVV8_GPIO_LED_WLAN	13
+#define TL_WIFIADVV8_GPIO_LED_WAN	18
+#define TL_WIFIADVV8_GPIO_LED_LAN1	19
+#define TL_WIFIADVV8_GPIO_LED_LAN2	20
+#define TL_WIFIADVV8_GPIO_LED_LAN3	21
+#define TL_WIFIADVV8_GPIO_LED_LAN4	22
+
+
 static const char *tl_wr841n_v8_part_probes[] = {
 	"tp-link",
 	NULL,
@@ -99,6 +107,35 @@ static struct gpio_led tl_wr841n_v8_leds_gpio[] __initdata = {
 		.active_low	= 1,
 	},
 };
+
+static struct gpio_led tl_wifiadv_v8_leds_gpio[] __initdata = {
+	{
+		.name		= "tp-link:green:lan1",
+		.gpio		= TL_WIFIADVV8_GPIO_LED_LAN1,
+		.active_low	= 1,
+	}, {
+		.name		= "tp-link:green:lan2",
+		.gpio		= TL_WIFIADVV8_GPIO_LED_LAN2,
+		.active_low	= 1,
+	}, {
+		.name		= "tp-link:green:lan3",
+		.gpio		= TL_WIFIADVV8_GPIO_LED_LAN3,
+		.active_low	= 1,
+	}, {
+		.name		= "tp-link:green:lan4",
+		.gpio		= TL_WIFIADVV8_GPIO_LED_LAN4,
+		.active_low	= 1,
+	}, {
+		.name		= "tp-link:green:wan",
+		.gpio		= TL_WIFIADVV8_GPIO_LED_WAN,
+		.active_low	= 1,
+	}, {
+		.name		= "tp-link:green:wlan",
+		.gpio		= TL_WIFIADVV8_GPIO_LED_WLAN,
+		.active_low	= 1,
+	}, 
+};
+
 
 static struct gpio_keys_button tl_wr841n_v8_gpio_keys[] __initdata = {
 	{
@@ -284,3 +321,53 @@ static void __init tl_wr941nd_v5_setup(void)
 
 MIPS_MACHINE(ATH79_MACH_TL_WR941ND_V5, "TL-WR941ND-v5", "TP-LINK TL-WR941N/ND v5",
 	     tl_wr941nd_v5_setup);
+
+static void __init tl_wifiadv_v8_setup(void)
+{
+	u8 *mac = (u8 *) KSEG1ADDR(0x1f01fc00);
+	u8 *ee = (u8 *) KSEG1ADDR(0x1fff1000);
+
+	/* Disable JTAG, enabling GPIOs 0-3 */
+	/* Configure OBS4 line, for GPIO 4*/
+	ath79_gpio_function_setup(AR934X_GPIO_FUNC_JTAG_DISABLE,
+				 AR934X_GPIO_FUNC_CLK_OBS4_EN);
+
+	/* config gpio4 as normal gpio function */
+	ath79_gpio_output_select(TL_MR3420V2_GPIO_USB_POWER,
+				 AR934X_GPIO_OUT_GPIO);
+
+	ath79_register_m25p80(&tl_wr841n_v8_flash_data);
+
+	ath79_setup_ar934x_eth_cfg(AR934X_ETH_CFG_SW_ONLY_MODE);
+
+	ath79_register_mdio(1, 0x0);
+
+	ath79_init_mac(ath79_eth0_data.mac_addr, mac, -1);
+	ath79_init_mac(ath79_eth1_data.mac_addr, mac, 0);
+
+	/* GMAC0 is connected to the PHY0 of the internal switch */
+	ath79_switch_data.phy4_mii_en = 1;
+	ath79_switch_data.phy_poll_mask = BIT(4);
+	ath79_eth0_data.phy_if_mode = PHY_INTERFACE_MODE_MII;
+	ath79_eth0_data.phy_mask = BIT(4);
+	ath79_eth0_data.mii_bus_dev = &ath79_mdio1_device.dev;
+	ath79_register_eth(0);
+
+	/* GMAC1 is connected to the internal switch */
+	ath79_eth1_data.phy_if_mode = PHY_INTERFACE_MODE_GMII;
+	ath79_register_eth(1);
+
+	ath79_register_wmac(ee, mac);
+
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(tl_wifiadv_v8_leds_gpio),
+				 tl_wifiadv_v8_leds_gpio);
+
+	ath79_register_gpio_keys_polled(1, TL_WR841NV8_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(tl_wr841n_v8_gpio_keys),
+					tl_wr841n_v8_gpio_keys);
+
+}
+
+MIPS_MACHINE(ATH79_MACH_TL_WIFIADV_V8, "TL-WIFIADV-v8", "TP-LINK TL-WIFIADV v8",
+	     tl_wifiadv_v8_setup);
+
